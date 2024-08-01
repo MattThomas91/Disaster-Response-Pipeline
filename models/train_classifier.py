@@ -54,11 +54,11 @@ def tokenize(text):
 
 
 def build_model():
-    """ 
+   """ Build and train a classifier model for relating messages and categories
     Args: none
 
     Returns:
-    cv: Pipeline.  A pipeline for a multioutput random forrest classifier trained on message and category training data
+    cv: Pipeline.  A pipeline for a multioutput random forrest classifier
     """ 
     # Load necessary packages
     from sklearn.pipeline import Pipeline, FeatureUnion
@@ -85,22 +85,19 @@ def build_model():
     }
     # Create grid search object
     cv = GridSearchCV(pipeline, param_grid = parameters)
-    # Fit the model using the grid search object
-    cv.fit(X_train,y_train)
-    # Return the fitted model
+    # Return the model
     return cv
     
     
 def evaluate_model(model, X_test, Y_test, category_names):
-    """ 
+    """ Calculate model performance metrics for each category
     Args:
-    model: P. The combined messages and categories dataframe
-    model: dataframe. The combined messages and categories dataframe
-    model: dataframe. The combined messages and categories dataframe
-    model: dataframe. The combined messages and categories dataframe
+    model: Pipeline. A pipeline for a multioutput random forrest classifier trained on message and category training data
+    X_test: array. Messages data reserved for testing
+    Y_test: array. Category data reserved for testing
+    category_names: array. List of column titles for the categories data 
 
-    Returns:
-    df: dataframe.  The messages and categories dataframe where categories data is converted into 1 or 0 values and columns are labeled appropriately 
+    Function outputs F1, precision, and recall score metrics for the model and testing data for each category
     """ 
     # Load calculations for F1, precision, and recall
     from sklearn.metrics import f1_score, precision_score, recall_score
@@ -125,6 +122,13 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    """ Save the classifier model as a pickle file
+    Args:
+    model: Pipeline. A pipeline for a multioutput random forrest classifier trained on message and category training data
+    model_filepath: str. The filepath for where the trained model is to be saved
+
+    The function creates a pickle file of the model at the model_filepath location
+    """ 
     # Import pickle
     import pickle
     # Export the model as a pickle file
@@ -132,6 +136,9 @@ def save_model(model, model_filepath):
 
 
 def main():
+    """ Train and output the classifier model
+    This function performs all steps to load disaster response data and train a classifier for categorizing disaster response messages
+    """
     from sklearn.model_selection import train_test_split
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]

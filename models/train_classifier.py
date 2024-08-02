@@ -54,7 +54,7 @@ def tokenize(text):
 
 
 def build_model():
-   """ Build and train a classifier model for relating messages and categories
+    """ Build and train a classifier model for relating messages and categories
     Args: none
 
     Returns:

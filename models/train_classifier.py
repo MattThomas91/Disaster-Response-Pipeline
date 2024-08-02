@@ -79,9 +79,9 @@ def build_model():
     ])
     # Define parameters for grid search
     parameters = {
-        'clf__estimator__bootstrap': [True, False],
+        #'clf__estimator__bootstrap': [True, False],
         'clf__estimator__n_estimators': [50, 100, 200],
-        'clf__estimator__criterion': ['gini', 'entropy', 'log_loss']
+        #'clf__estimator__criterion': ['gini', 'entropy', 'log_loss']
     }
     # Create grid search object
     cv = GridSearchCV(pipeline, param_grid = parameters)

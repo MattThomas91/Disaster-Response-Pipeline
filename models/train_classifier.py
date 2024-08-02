@@ -30,7 +30,7 @@ def load_data(database_filepath):
     return X, Y, category_names
 
 def tokenize(text):
-    """ 
+    """ Transform message data into usable token data
     Args:
     text: array. The list of message strings
 
@@ -65,6 +65,7 @@ def build_model():
     from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
     from sklearn.multioutput import MultiOutputClassifier
     from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import GridSearchCV
     # Build the ML Pipleline
     pipeline = Pipeline([
         # Add Vectorization and TFIDF transformer
@@ -79,8 +80,8 @@ def build_model():
     ])
     # Define parameters for grid search
     parameters = {
-        #'clf__estimator__bootstrap': [True, False],
-        'clf__estimator__n_estimators': [50, 100, 200],
+        'clf__estimator__bootstrap': [True, False],
+        #'clf__estimator__n_estimators': [50, 100, 200],
         #'clf__estimator__criterion': ['gini', 'entropy', 'log_loss']
     }
     # Create grid search object

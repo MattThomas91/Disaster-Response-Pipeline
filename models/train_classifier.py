@@ -1,9 +1,10 @@
 import sys
 import nltk
+nltk.download(['stopwords','punkt', 'wordnet', 'averaged_perceptron_tagger'])
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk import pos_tag
-nltk.download('stopwords')
 from nltk.corpus import stopwords
+import pandas as pd
 
 def load_data(database_filepath):
     """ 
@@ -62,7 +63,6 @@ def tokenize(text):
 from sklearn.base import BaseEstimator, TransformerMixin
 # Define a class for the Starting verb extractor
 class StartingVerbExtractor(BaseEstimator, TransformerMixin):
-
     def starting_verb(self, text):
         """ Find if the start of each sentence is a verb
         Args:

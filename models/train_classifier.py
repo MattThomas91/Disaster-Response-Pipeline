@@ -1,5 +1,9 @@
 import sys
-
+import nltk
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk import pos_tag
+nltk.download('stopwords')
+from nltk.corpus import stopwords
 
 def load_data(database_filepath):
     """ 
@@ -49,8 +53,44 @@ def tokenize(text):
     for tok in tokens:
         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
         clean_tokens.append(clean_tok) 
+    # Remove stopwords from tokens
+    words = [t for t in tokens if t not in stopwords.words("english")]    
     # Return clean tokens as output
     return(clean_tokens)
+
+# Import packages for StartingVerbExtractor
+from sklearn.base import BaseEstimator, TransformerMixin
+# Define a class for the Starting verb extractor
+class StartingVerbExtractor(BaseEstimator, TransformerMixin):
+
+    def starting_verb(self, text):
+        """ Find if the start of each sentence is a verb
+        Args:
+        text: str. Message text from the disaster response database
+
+        Returns:
+        Returns True if starting word was a verb and False if not
+        """ 
+       
+        # Transform text into tokenized sentences
+        sentence_list = nltk.sent_tokenize(text)
+        # Extract starting verbs
+        for sentence in sentence_list:
+            # Tag positions for words in sentences
+            pos_tags = nltk.pos_tag(tokenize(sentence))
+            # Find the first word and it's tag
+            first_word, first_tag = pos_tags[0]
+            # If the first word is a verb, return True
+            if first_tag in ['VB', 'VBP'] or first_word == 'RT':
+                return True
+        return False
+
+    def fit(self, x, y=None):
+        return self
+
+    def transform(self, X):
+        X_tagged = pd.Series(X).apply(self.starting_verb)
+        return pd.DataFrame(X_tagged)
 
 
 def build_model():
@@ -68,14 +108,16 @@ def build_model():
     from sklearn.model_selection import GridSearchCV
     # Build the ML Pipleline
     pipeline = Pipeline([
-        # Add Vectorization and TFIDF transformer
         ('features', FeatureUnion([
+
             ('text_pipeline', Pipeline([
                 ('vect', CountVectorizer(tokenizer=tokenize)),
                 ('tfidf', TfidfTransformer())
             ])),
+
+            ('starting_verb', StartingVerbExtractor())
         ])),
-        # Set Random Forest Classifier as ML model
+
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
     # Define parameters for grid search

@@ -48,6 +48,8 @@ def clean_data(df):
     df = pd.concat([df,categories],axis=1)
     # Remove duplicate values
     df = df.drop_duplicates()
+    # Remove 'related' column values > 1
+    df = df[df['related'] < 2]
     return df
     
 

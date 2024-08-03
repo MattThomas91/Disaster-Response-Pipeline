@@ -63,7 +63,7 @@ def save_data(df, database_filename):
     from sqlalchemy import create_engine
     # Save clean data to SQLite database
     engine = create_engine('sqlite:///' + database_filename)
-    df.to_sql('DisasterDatabase', engine, index=False)
+    df.to_sql('DisasterDatabase', engine, index=False,if_exists='replace')
 
 def main():
     """ Run the steps for processing the disaster response data
